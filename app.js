@@ -78,7 +78,7 @@ app.post("/register", async (request, response) => {
   }
 });
 //login and authentication
-app.get("/login/", async (request, response) => {
+app.post("/login/", async (request, response) => {
   const { username, password } = request.body;
   const getUserQuery = `SELECT * FROM admin WHERE username='${username}';`;
   const user = await db.get(getUserQuery);
@@ -88,7 +88,7 @@ app.get("/login/", async (request, response) => {
   } else {
     const isPasswordRight = await bcrypt.compare(password, user.password);
     if (isPasswordRight) {
-      const payLoad = user.id;
+      const payLoad = user.username;
       const jwtToken = jwt.sign(payLoad, "passwordishidden");
       response.send({ jwt_token: jwtToken });
     } else {
@@ -103,8 +103,44 @@ app.get("/admin", async (request, response) => {
   const users = await db.all(getAdminListQuery);
   response.send(users);
 });
-//add projects projects
-app.post("/projects", authenticationToken, async (request, response) => {});
+//projects
+//validateData
+const validateData = (title, description, projectUrl) => {
+  if (title === "" || description === "" || projectUrl === "") {
+    return false;
+  } else {
+    return true;
+  }
+};
+//add projects
+app.post("/projects", authenticationToken, async (request, response) => {
+  const { title, description, projectUrl } = request.body;
+  try {
+    if (databaseUser !== undefined) {
+      const insertDataQuery = `
+     INSERT INTO
+      data (title,description,project_url)
+     VALUES
+      ('${title}',
+      '${description}',
+       '${projectUrl}'
+      );`;
+      if (validateData(title, description, projectUrl)) {
+        await db.run(insertDataQuery);
+        response.send({ message: "Data entered successfully" });
+      } else {
+        response.status(400);
+        response.send({
+          error_msg: "Invalid data.One or more fields are empty",
+        });
+      }
+    }
+  } catch (e) {
+    response.status(400);
+    response.send({ error_msg: e });
+  }
+});
+//get data
 app.get("/projects", authenticationToken, async (request, response) => {
   const getProjectsQuery = `SELECT * FROM projects;`;
   const projects = await db.all(getProjectsQuery);
