@@ -16,3 +16,12 @@ Content-Type: application/json
   "username": "chaitanya",
   "password": "jhondoe@123"
 }
+###
+GET http://localhost:3001/projects
+
+{
+ "headers": {
+        "Accept": "application/json",
+       "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.Y2hhaXRhbnlh.AZK6-vbWwwP1bci6KqJzaS5PMsx7jOV0dJ62rEQER7M"
+      }
+}

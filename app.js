@@ -31,6 +31,7 @@ const validatePassword = (password) => {
 const authenticationToken = (request, response, next) => {
   let jwtToken;
   const authHeader = request.headers["authorization"];
+  console.log(authHeader);
   if (authHeader !== undefined) {
     jwtToken = authHeader.split(" ")[1];
   }
@@ -113,7 +114,7 @@ const validateData = (title, description, projectUrl) => {
   }
 };
 //add projects
-app.post("/projects", authenticationToken, async (request, response) => {
+app.post("/projects", async (request, response) => {
   const { title, description, projectUrl } = request.body;
   try {
     if (databaseUser !== undefined) {
@@ -141,7 +142,7 @@ app.post("/projects", authenticationToken, async (request, response) => {
   }
 });
 //get data
-app.get("/projects", authenticationToken, async (request, response) => {
+app.get("/projects", async (request, response) => {
   const getProjectsQuery = `SELECT * FROM projects;`;
   const projects = await db.all(getProjectsQuery);
   response.send({ projects });
