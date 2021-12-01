@@ -17,11 +17,13 @@ Content-Type: application/json
   "password": "jhondoe@123"
 }
 ###
-GET http://localhost:3001/projects
+POST http://localhost:3001/projects
+Content-Type: application/json
 
 {
- "headers": {
-        "Accept": "application/json",
-       "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.Y2hhaXRhbnlh.AZK6-vbWwwP1bci6KqJzaS5PMsx7jOV0dJ62rEQER7M"
-      }
+    "title":"Jobby App",
+    "description":"Implemented Jobby application which is a basic model of job searching platform ",
+    "projectUrl":"https://chaijobsapp.ccbp.tech/"
 }
+###
+GET http://localhost:3001/projects

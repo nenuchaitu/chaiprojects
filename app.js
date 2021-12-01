@@ -116,33 +116,26 @@ const validateData = (title, description, projectUrl) => {
 //add projects
 app.post("/projects", async (request, response) => {
   const { title, description, projectUrl } = request.body;
-  try {
-    if (databaseUser !== undefined) {
-      const insertDataQuery = `
+  const insertDataQuery = `
      INSERT INTO
-      data (title,description,project_url)
+      projects (title,description,url)
      VALUES
       ('${title}',
       '${description}',
        '${projectUrl}'
       );`;
-      if (validateData(title, description, projectUrl)) {
-        await db.run(insertDataQuery);
-        response.send({ message: "Data entered successfully" });
-      } else {
-        response.status(400);
-        response.send({
-          error_msg: "Invalid data.One or more fields are empty",
-        });
-      }
-    }
-  } catch (e) {
+  if (validateData(title, description, projectUrl)) {
+    await db.run(insertDataQuery);
+    response.send({ message: "Data entered successfully" });
+  } else {
     response.status(400);
-    response.send({ error_msg: e });
+    response.send({
+      error_msg: "Invalid data.One or more fields are empty",
+    });
   }
 });
 //get data
-app.get("/projects", async (request, response) => {
+app.get("/projects", authenticationToken, async (request, response) => {
   const getProjectsQuery = `SELECT * FROM projects;`;
   const projects = await db.all(getProjectsQuery);
   response.send({ projects });
